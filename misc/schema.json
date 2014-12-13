@@ -1,0 +1,37 @@
+{
+	"type":"object",
+		"$schema": "http://json-schema.org/draft-03/schema",
+		"id": "http://api.13pm.eu/v1.0/aps/config",
+		"required":true,
+		"additionalProperties": false,
+		"properties":{
+			"aaa_fqdn": {
+				"type":"string",
+				"id": "http://api.13pm.eu/v1.0/aps/config/aaa_fqdn",
+				"required":true,
+				"pattern":"^([a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,6}$"
+			},
+			"aaa_ipv6": {
+				"type":"string",
+				"id": "http://api.13pm.eu/v1.0/aps/config/aaa_ipv6",
+				"required":true
+			},
+			"aaa_public_key": {
+				"type":"string",
+				"id": "http://api.13pm.eu/v1.0/aps/config/aaa_public_key",
+				"required":true,
+				"pattern":"^[a-z0-9]{64}$"
+			},
+			"aaa_secret": {
+				"type":"string",
+				"id": "http://api.13pm.eu/v1.0/aps/config/aaa_secret",
+				"required":true
+			},
+			"ipv6_addr": {
+				"type":"string",
+				"id": "http://api.13pm.eu/v1.0/aps/config/ipv6_addr",
+				"required":true
+			}
+		}
+}
+
