@@ -45,48 +45,43 @@ int exec_check( WJElement *conf, char *path ) {
 int exec_commit( WJElement *conf, char *path ) {
 
 	// Build environment array
-	char **env = malloc( sizeof( char * ) );
-	int envc = 0;
+	char *cmd = calloc( 2048, sizeof( char * ) );
+	int cmdc = 0;
 
 	// Iterate through all config fields
 	WJElement item = WJEChild( *conf, "config", WJE_GET )->child;
 	do {
 		int i;
 
-		// Create string buffer
-		env[envc] = calloc( 128, sizeof( char ) );
-
 		// Copy the name and make it uppercase
-		for( i = 0; item->name[i]; i++ ) {
-			env[envc][i] = toupper( item->name[i] );
+		for( i = 0; item->name[i] && cmdc < 2048-4; i++ ) {
+			cmd[cmdc++] = toupper( item->name[i] );
 		}
 		
 		// Delimiter
-		env[envc][i++] = '=';
-		env[envc][i++] = '\0';
+		cmd[cmdc++] = '=';
+		cmd[cmdc++] = '"';
 
 		// Value
-		strncat( env[envc], WJEString( item, "", WJE_GET, NULL ), 128 - i );
+		char *value = WJEString( item, "", WJE_GET, NULL );
+		for( i = 0; value[i] && cmdc < 2048-4; i++ ) {
+			cmd[cmdc++] = value[i];
+		}
 
-		// Create a new element
-		envc++;
-		env = realloc( env, sizeof( char * ) * (envc+1) );
+		// Finalise
+		cmd[cmdc++] = '"';
+		cmd[cmdc++] = ' ';
 
 	} while( (item = item->next) );
-	// Terminate array with null pointer
-	env[envc] = (char*) 0;
 
-	// Command array
-	char *cmd[] = { "sh", path, (char *) 0 };
+	// Add path
+	strncat( cmd, path, 2048 - cmdc );
 
 	// Execute
-	int ret = execve( "/bin/sh", cmd, env );
+	int ret = system( cmd );
 
 	// Clean up
-	while( envc-- ) {
-		free( env[ envc ] );
-	}
-	free( env );
+	free( cmd );
 
 	return ret;
 
@@ -94,11 +89,8 @@ int exec_commit( WJElement *conf, char *path ) {
 
 int exec_revert( char *path ) {
 
-	// Command array
-	char *cmd[] = { "sh", path, (char *) 0 };
-
 	// Execute
-	int ret = execv( "/bin/sh", cmd );
+	int ret = system( path );
 
 	return ret;
 
