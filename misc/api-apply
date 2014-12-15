@@ -1,0 +1,9 @@
+#!/bin/sh
+
+uci -q get api.@ctrl[0].disabled > /dev/null && exit 0
+
+USERNAME=$(uci get api.@ctrl[0].username)
+PASSWORD=$(uci get api.@ctrl[0].password)
+
+/usr/sbin/api -u $USERNAME -p $PASSWORD
+

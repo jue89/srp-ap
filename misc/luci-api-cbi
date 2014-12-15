@@ -1,0 +1,37 @@
+--[[
+LuCI - Lua Configuration Interface
+
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2011 Jo-Philipp Wich <xm@subsignal.org>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id$
+]]--
+
+m = Map("api", translate("Sharer Account"),
+	translate("Account credentials for sharing Internet access."))
+
+s = m:section(TypedSection, "ctrl", "")
+s.addremove = false
+s.anonymous = true
+
+o = s:option(Value, "username", translate("Username"))
+
+o = s:option(Value, "password", translate("Password"))
+o.password = true
+
+o = s:option(Flag, "disabled", translate("Enable configuration pull"))
+o.enabled  = "0"                                                                                                                                                
+o.disabled = "1"                                                                                                                                               
+--o.default  = o.enabled
+
+function m.on_after_commit( self )
+	luci.sys.call('/usr/sbin/api-apply')
+end
+
+return m

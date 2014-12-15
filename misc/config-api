@@ -1,0 +1,8 @@
+
+config ctrl
+	list fqdn 'http://api.13pm.eu/v1.0'
+	list fqdn 'http://ctrl01.13pm.eu/v1.0'
+	option password ''
+	option username ''
+	option disabled '1'
+
